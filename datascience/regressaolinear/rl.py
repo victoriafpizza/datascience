@@ -1,70 +1,65 @@
-#! /usr/bin/env python3 #
-# -*- coding: utf-8 -*- #
+#! /usr/bin/env python3 
+# -*- coding: utf-8 -*- 
 
-## Importação dos módulos - - - - - - - - - - - - - - - - - - - - - - #
-import pandas as pd
-import numpy  as np
-from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
+## Importação dos módulos necessários para a análise de dados e visualização
+import pandas as pd  # Para manipulação de dados
+import numpy as np   # Para cálculos numéricos
+from sklearn.linear_model import LinearRegression  # Para criar o modelo de regressão linear
+import matplotlib.pyplot as plt  # Para plotar gráficos
 
-
-## carrega o dataset
+## Carrega o dataset 'LungDisease.csv' (doença pulmonar) em um DataFrame do pandas
 doenca_pulmao_csv = 'LungDisease.csv'
 dataset_doenca_pulmao = pd.read_csv(doenca_pulmao_csv)
 
-## primeira visualização dos dados
+## Primeira visualização dos dados: plotando um gráfico de dispersão (scatter plot) 
+## para ver a relação entre 'Exposure' (exposição) e 'PEFR' (taxa de fluxo expiratório)
 dataset_doenca_pulmao.plot.scatter(x='Exposure', y='PEFR')
-plt.show()
+plt.show()  # Exibe o gráfico
 
-## seta as variáveis preditoras e avlo
+## Definição das variáveis:
+## 'preditoras' contém a variável independente ('Exposure')
+## 'alvo' contém a variável dependente ('PEFR')
 preditoras = ['Exposure']
 alvo = 'PEFR'
 
-## criação do modelo usando regressão linear simples
+## Criação do modelo de regressão linear simples
 model = LinearRegression()
-model.fit(dataset_doenca_pulmao[preditoras],
-          dataset_doenca_pulmao[alvo])
+## Ajuste do modelo usando os dados do dataset
+## O modelo será treinado para prever 'PEFR' com base em 'Exposure'
+model.fit(dataset_doenca_pulmao[preditoras], dataset_doenca_pulmao[alvo])
 
-## exibe dos dados coeficientes calculados pelo método fit
+## Exibição dos coeficientes obtidos pelo modelo ajustado
+## Intercepto é o valor de 'PEFR' quando 'Exposure' é 0
+## Coeficiente de exposição é o valor que multiplica a variável 'Exposure' na equação da reta
 print(f'Intercepto: {model.intercept_:.3f}')
 print(f'Coeficiente de exposição: {model.coef_[0]:.3f}')
 print(f'Equação: Y = {model.intercept_:.3f} + {model.coef_[0]:.3f} X')
 
-## visualização da reta que representa a equação de regressão
+## Visualização gráfica da reta de regressão
 fig, ax = plt.subplots()
-## atribuição dos valores limites dos eixos x e y
-ax.set_xlim(0, 23)
-ax.set_ylim(295, 450)
-## atribuição dos rótulos dos eixos x e y
+## Definindo os limites dos eixos X e Y
+ax.set_xlim(0, 23)  # Limites para 'Exposure'
+ax.set_ylim(295, 450)  # Limites para 'PEFR'
+## Definindo os rótulos dos eixos
 ax.set_xlabel('Exposure')
 ax.set_ylabel('PEFR')
-## obtém os valores extremos da equação de regressão para desenhar os
-## extremos da reta
+## Desenhando a reta de regressão com base nos valores de 'Exposure' (0 a 23)
 ax.plot((0, 23), model.predict(pd.DataFrame({'Exposure': [0, 23]})))
-## posiciona o intercepto (coeficiente b_0) na reta
+## Marcando o intercepto (b_0) no gráfico, que é onde a reta cruza o eixo Y
 ax.text(0.4, model.intercept_, r'$b_0$', size='larger')
 
-plt.show()
+plt.show()  # Exibe o gráfico com a reta de regressão
 
-## computa os erros do modelo
-previsto = model.predict(dataset_doenca_pulmao[preditoras])
-erros = dataset_doenca_pulmao[alvo] - previsto
+## Cálculo dos erros do modelo (diferença entre os valores reais e os previstos)
+previsto = model.predict(dataset_doenca_pulmao[preditoras])  # Valores previstos pelo modelo
+erros = dataset_doenca_pulmao[alvo] - previsto  # Diferença entre os valores reais e os previstos
 
+## Exibição dos valores reais, previstos e os erros para cada ponto de dados
 for x, real, p, erro in zip(dataset_doenca_pulmao.Exposure,
                             dataset_doenca_pulmao.PEFR,
                             previsto,
                             erros):
     print(f"X: {x}  Valor real: {real}  Valor Previsto: {p}  Erro: {erro}")
 
-## visualização gráfica dos erros
-## dados do dataset
-ax = dataset_doenca_pulmao.plot.scatter(x='Exposure', y='PEFR')
-## dados previstos
-ax.plot(dataset_doenca_pulmao.Exposure, previsto)
-
-for x, y_real, y_previsto in zip(dataset_doenca_pulmao.Exposure,
-                                 dataset_doenca_pulmao.PEFR,
-                                 previsto):
-    ax.plot((x,x), (y_real, y_previsto), '--', color='C1')
-
-plt.show()
+## Visualização gráfica dos erros
+## Primeiro, um gráfico de dispers
