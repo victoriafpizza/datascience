@@ -9,3 +9,4 @@ Neste repositório coloquei anotações sobre as minhas aulas de Data Science. C
 - Estatísticas Descritivas
 - Histogramas 
 - Regressão Linear
+- Árvores de Decisão
